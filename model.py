@@ -1,11 +1,21 @@
 import pandas as pd 
+import sklearn
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import pickle
+import numpy
+
+
 
 
 
 def train_and_save_model():
+
+    print('The scikit-learn version is {}.'.format(sklearn.__version__))
+    print('The numpy version is {}.'.format(numpy.__version__))
+    print('The pandas version is {}.'.format(pd.__version__))
+    print(pickle.format_version)
+
     data = pd.read_csv('https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv')
     X = data.drop(columns=["medv"])
     y = data['medv']

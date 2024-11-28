@@ -1,0 +1,6 @@
+Flask
+pytest
+scikit-learn
+pickle
+numpy
+pandas

@@ -1,4 +1,10 @@
-name: House price estimator CI pipeline
+name: House price estimator CICD pipeline
+
+env:
+  SERVICE_NAME: house price estimator
+  PROJECT_ID: eng-cache-439121-g2
+  DOCKER_IMAGE_URL: europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest
+  #europe-west10
 
 on:
     push:
@@ -36,3 +42,27 @@ jobs:
             - name: Run Tests
               run: pytest
 
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+            - name : Checkout code
+              uses: actions/checkout@v3
+
+            - name: Athenticate to GCP
+              uses: google-github-actions/auth@v1
+              with:
+                creditials_json: ${{secrets.GCP_KEY_2}}
+
+
+
+            - name: Configure GCP project
+              run:
+                gcloud config set project eng-cache-439121-g2
+
+
+            - name: Build and Push Docker Image
+              run:|
+                docker build -t europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest . 
+                gcloud auth cofigure-docker  europe-west10-docker.pkg.dev
+                docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest 

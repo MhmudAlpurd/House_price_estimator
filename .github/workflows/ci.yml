@@ -111,7 +111,6 @@ jobs:
 
             - name: Build and Push Docker Image
               run: |
-                #docker build -t europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest . 
                 docker build -t flask-app:latest .
                 docker tag flask-app:latest europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest
 

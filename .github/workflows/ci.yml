@@ -42,29 +42,41 @@ jobs:
             - name: Run Tests
               run: pytest
 
+
     deploy:
-      runs-on: ubuntu-latest
-      needs: build-and-test
+        runs-on: ubuntu-latest
+        steps:
+          # Step 1: Checkout the repository
+          - name: Checkout repository
+            uses: actions/checkout@v3
 
-      steps:
-            - name : Checkout code
-              uses: actions/checkout@v3
+          # Step 2: Set up Google Cloud authentication
+          - name: Authenticate to Google Cloud
+            uses: google-github-actions/auth@v1
+            with:
+              credentials_json: ${{ secrets.GCP_KEY }}
 
-            - name: Athenticate to GCP
-              uses: google-github-actions/auth@v1
-              with:
-                credentials_json: ${{secrets.GCP_KEY}}
+          # Step 3: Set up Docker authentication for Artifact Registry
+          - name: Configure Docker for Artifact Registry
+            run: |
+              gcloud auth configure-docker europe-west10-docker.pkg.dev
 
+          # Step 4: Build and tag Docker image
+          - name: Build and Tag Docker Image
+            run: |
+              docker build -t flask-app:latest .
+              docker tag flask-app:latest europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest
 
+          # Step 5: Push Docker image to Artifact Registry
+          - name: Push Docker Image
+            run: |
+              docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest
 
-            - name: Configure GCP project
-              run:
-                gcloud config set project eng-cache-439121-g2
-
-
-            - name: Build and Push Docker Image
-              run: |
-                docker build -t europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest . 
-                gcloud auth configure-docker  europe-west10-docker.pkg.dev
-                docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest
-                
+          # Step 6: Deploy to Cloud Run
+          - name: Deploy to Cloud Run
+            run: |
+              gcloud run deploy flask-app \
+                --image europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest \
+                --platform managed \
+                --region europe-west10 \
+                --allow-unauthenticated

@@ -64,5 +64,5 @@ jobs:
             - name: Build and Push Docker Image
               run: |
                 docker build -t europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest . 
-                gcloud auth cofigure-docker  europe-west10-docker.pkg.dev
+                gcloud auth configure-docker  europe-west10-docker.pkg.dev
                 docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest 

@@ -66,5 +66,5 @@ jobs:
               run: |
                 docker build -t europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest . 
                 gcloud auth configure-docker  europe-west10-docker.pkg.dev
-                docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app:latest
+                docker push europe-west10-docker.pkg.dev/eng-cache-439121-g2/flask-app/flask-app:latest
                 
